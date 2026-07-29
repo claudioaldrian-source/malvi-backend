@@ -87,15 +87,10 @@ const getUsersService = async ({ email, id, requesterRole, requesterId }) => {
     }
 
     if (role === "USER") {
-      const user = await User.findById(currentUserId).select("-password");
-      if (!user) {
-        throw {
-          statusCode: 404,
-          message: "Usuario no encontrado",
-        };
-      }
-      return user;
-    }
+  return await User.find()
+    .select("-password")
+    .sort({ nombre: 1 });
+}
 
     if (role === "ADMIN") {
       return await User.find({ role: { $ne: "ROOT" } })
