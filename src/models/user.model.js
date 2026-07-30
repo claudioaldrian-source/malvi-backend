@@ -63,12 +63,23 @@ const userSchema = new mongoose.Schema(
       type: Date,
       default: null,
     },
+
+    mfaEnabled: {
+      type: Boolean,
+      default: false,
+    },
+
+    mfaSecret: {
+      type: String,
+      default: "",
+    },
+
   },
   {
     timestamps: true,
   },
 );
 
-const User = mongoose.model("User", userSchema);
+const User = mongoose.model ("User", userSchema);
 
 export default User;

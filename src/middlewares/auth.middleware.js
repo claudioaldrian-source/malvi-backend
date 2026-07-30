@@ -1,40 +1,53 @@
 import jwt from "jsonwebtoken";
 import { errorResponse } from "../helpers/response.helper.js";
 import { env } from "../config/env.js";
-const authMiddleware = (req, res, next ) => {
-        try {
-            const authorization = req.headers.authorization;
-            if (!authorization) {
-                return errorResponse(
-                    res,
-                    "Token requerido",
-                    401,
-                );
-            }
-            const token = authorization.replace(
-                "Bearer ",
-                "",
-            );
 
-            const decoded = jwt.verify(
-                token,
-                env.JWT_SECRET,
-            );
+const authMiddleware = (req, res, next) => {
+    try {
 
-            req.user = {
-                userId: decoded.userId,
-                role: decoded.role,
-                
-            };
-            next();
+        const authorization = req.headers.authorization;
 
-        } catch (error) {
-            errorResponse(
+        console.log("Authorization:", authorization);
+
+        if (!authorization) {
+            return errorResponse(
                 res,
-                "Token inválido",
+                "Token requerido",
                 401,
-
             );
         }
-    };
-    export {authMiddleware} ;
+
+        const token = authorization.replace(
+            "Bearer ",
+            "",
+        );
+
+        console.log("Token:", token);
+
+        const decoded = jwt.verify(
+            token,
+            env.JWT_SECRET,
+        );
+
+        console.log("Decoded:", decoded);
+
+        req.user = {
+            userId: decoded.userId,
+            role: decoded.role,
+        };
+
+        next();
+
+    } catch (error) {
+
+        console.log("JWT Error:", error);
+
+        return errorResponse(
+            res,
+            "Token inválido",
+            401,
+        );
+    }
+};
+
+export { authMiddleware };
