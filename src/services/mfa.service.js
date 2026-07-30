@@ -40,8 +40,32 @@ class MfaService {
 }
 
 
-  async verify(userId, token) {
   // Verificar el código de 6 dígitos
+async verify(userId, token) {
+
+  const user = await User.findById(userId);
+
+  if (!user) {
+    throw new Error("Usuario no encontrado");
+  }
+
+  const verified = speakeasy.totp.verify({
+    secret: user.mfaSecret,
+    encoding: "base32",
+    token,
+  });
+
+  if (!verified) {
+    throw new Error("Código MFA inválido");
+  }
+
+  user.mfaEnabled = true;
+
+  await user.save();
+
+  return {
+    enabled: true,
+  };
 }
 
 async disable(userId) {
