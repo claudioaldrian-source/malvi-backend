@@ -7,8 +7,6 @@ const authMiddleware = (req, res, next) => {
 
         const authorization = req.headers.authorization;
 
-        console.log("Authorization:", authorization);
-
         if (!authorization) {
             return errorResponse(
                 res,
@@ -22,14 +20,10 @@ const authMiddleware = (req, res, next) => {
             "",
         );
 
-        console.log("Token:", token);
-
         const decoded = jwt.verify(
             token,
             env.JWT_SECRET,
         );
-
-        console.log("Decoded:", decoded);
 
         req.user = {
             userId: decoded.userId,
@@ -39,8 +33,6 @@ const authMiddleware = (req, res, next) => {
         next();
 
     } catch (error) {
-
-        console.log("JWT Error:", error);
 
         return errorResponse(
             res,
